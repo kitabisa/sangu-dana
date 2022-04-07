@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"moul.io/http2curl"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -40,8 +41,8 @@ func NewClient() Client {
 		// 1: Errors only
 		// 2: Errors + informational (default)
 		// 3: Errors + informational + debug
-		LogLevel: 2,
-		Logger:   logger,
+		LogLevel:         2,
+		Logger:           logger,
 		SignatureEnabled: true,
 	}
 }
@@ -94,7 +95,14 @@ func (c *Client) ExecuteRequest(req *http.Request, v interface{}) error {
 
 	if v != nil && res.StatusCode == 200 {
 		if err = json.Unmarshal(resBody, v); err != nil {
+			c.Logger.Error("Failed unmarshal body: %v ", err)
 			return err
+		}
+
+		// Dana endpoint V1 doesn't return signature in response, so we don't need to verify signature again
+		if strings.Contains(req.URL.String(), "/v1/") {
+			c.Logger.Info("Req URL Contains Dana endpoint V1")
+			return nil
 		}
 
 		if c.SignatureEnabled {
@@ -103,6 +111,7 @@ func (c *Client) ExecuteRequest(req *http.Request, v interface{}) error {
 
 			err = verifySignature(response.String(), signature.String(), c.PublicKey)
 			if err != nil {
+				c.Logger.Error("verifySignature failed: %v ", err)
 				return err
 			}
 		}
@@ -124,4 +133,3 @@ func (c *Client) Call(method, path string, header map[string]string, body io.Rea
 }
 
 // ===================== END HTTP CLIENT ================================================
-

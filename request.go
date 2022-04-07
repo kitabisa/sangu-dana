@@ -170,3 +170,8 @@ type RequestApplyAccessToken struct {
 type UserProfileRequestData struct {
 	UserResources []string `json:"userResources" valid:"required"`
 }
+
+type InquiryUserInfoRequest struct {
+	AccessToken string `json:"accessToken" valid:"required"`
+	ExtendInfo  string `json:"extendInfo,omitempty" valid:"optional"`
+}

@@ -49,10 +49,11 @@ type RefundResponseData struct {
 }
 
 type ResultInfo struct {
-	ResultStatus string `json:"resultStatus" valid:"optional"`
-	ResultCodeID string `json:"resultCodeId" valid:"optional"`
-	ResultMsg    string `json:"resultMsg" valid:"optional"`
-	ResultCode   string `json:"resultCode" valid:"optional"`
+	ResultStatus  string `json:"resultStatus" valid:"optional"`
+	ResultCodeID  string `json:"resultCodeId" valid:"optional"`
+	ResultMsg     string `json:"resultMsg" valid:"optional"`
+	ResultCode    string `json:"resultCode" valid:"optional"`
+	ResultMessage string `json:"resultMessage" valid:"optional"`
 }
 
 type PayFinishResponse struct {
@@ -141,4 +142,23 @@ type UserResourceInfos struct {
 type UserProfileResponseData struct {
 	ResultInfo        ResultInfo          `json:"resultInfo" valid:"required"`
 	UserResourceInfos []UserResourceInfos `json:"userResourceInfos" valid:"required"`
+}
+
+type InquiryUserInfoResponse struct {
+	Result   ResultInfo     `json:"result" valid:"required"`
+	UserInfo ResultUserInfo `json:"userInfo"  valid:"required"`
+}
+
+type ResultUserInfo struct {
+	UserContactInfoEmail string        `json:"USER_CONTACTINFO_EMAIL" valid:"optional"`
+	UserName             string        `json:"USER_NAME" valid:"optional"`
+	UserAddress          []UserAddress `json:"USER_ADDRESS" valid:"optional"`
+	UserContactInfo      string        `json:"USER_CONTACTINFO" valid:"optional"`
+}
+
+type UserAddress struct {
+	Area     string `json:"area" valid:"optional"`
+	Province string `json:"province" valid:"optional"`
+	City     string `json:"city" valid:"optional"`
+	Address1 string `json:"address1" valid:"optional"`
 }
